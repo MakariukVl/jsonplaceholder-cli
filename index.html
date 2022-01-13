@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>REST Client</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
+  <style>
+    body {
+      background-color: dimgray;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .page-header {
+      font-size: x-large;
+      text-align: center;
+      color: white;
+    }
+
+    .card {
+      background-color: whitesmoke;
+      border-radius: 5px;
+      color: black;
+      display: grid;
+      grid-auto-flow: row;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 1rem;
+    }
+
+    .card_wrap {
+      margin: 0 1rem;
+    }
+
+    .control-panel {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      height: max-content;
+    }
+
+    .btn-dark {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      color: white;
+      border: 1px solid black;
+      background-color: #232323;
+      cursor: pointer;
+    }
+
+    .btn-dark:hover {
+      border-color: #232323;
+      background-color: white;
+      color: black;
+    }
+
+    .edit-user_label,
+    .card_prop {
+      text-align: start;
+      font-weight: 600;
+    }
+
+    .card_value {
+      color: #232323;
+    }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      width: fit-content;
+      position: fixed;
+      top: calc(50vh - 20px);
+      left: calc(50vw - 20px);
+    }
+
+    .spinner_pulse {
+      -webkit-animation: spin 1s infinite steps(8);
+      animation: spin 1s infinite steps(8);
+    }
+
+    @-webkit-keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+
+      100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+      }
+    }
+
+    .edit-user {
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .edit-user_wrap {
+      margin: 10px;
+      flex-basis: 45%;
+      background-color: #121212;
+      border-top-right-radius: 30% 15%;
+      padding-left: 20px;
+      padding-right: 50px;
+      padding-bottom: 20px;
+    }
+
+    .edit-user_header {
+      color: white;
+      margin-top: 0.4em;
+      margin-bottom: 0.4em;
+    }
+
+    .edit-user_row {
+      display: flex;
+    }
+
+    .edit-user_label {
+      padding-left: 10px;
+      background-color: #232323;
+      color: white;
+      border: none;
+      border-bottom: 1px solid black;
+      border-top-left-radius: 5px 50%;
+      border-bottom-left-radius: 5px 50%;
+      text-align: end;
+      flex-basis: 16%;
+    }
+
+    .edit-user_label:focus {
+      box-shadow: 0 0 5px lightgray;
+    }
+
+    .edit-user_input {
+      text-align: start;
+      border: none;
+      border-bottom: 1px solid #232323;
+      outline: none;
+      padding-left: 0.5rem;
+      box-shadow: none;
+      border-top-right-radius: 5px 50%;
+      border-bottom-right-radius: 5px 50%;
+      flex-basis: 80%;
+    }
+
+    .edit-user_input:disabled {
+      color: whitesmoke;
+    }
+
+    .btn-dark-outline {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      color: white;
+      border: 1px solid #232323;
+      background-color: whitesmoke;
+      color: black;
+      cursor: pointer;
+    }
+
+    .btn-dark-outline:hover {
+      background-color: #d3d2d2;
+    }
+
+    .control-panel {
+      display: flex;
+      gap: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="js/index.js"></script>
+  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="spinner" id="spinner"
+    class="spinner spinner_pulse" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="40">
+    <path fill="currentColor"
+      d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z">
+    </path>
+  </svg>
+  <section id="root"></section>
+</body>
+
+</html>
